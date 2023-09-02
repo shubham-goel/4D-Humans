@@ -22,12 +22,13 @@ def main():
     parser.add_argument('--full_frame', dest='full_frame', action='store_true', default=False, help='If set, render all people together also')
     parser.add_argument('--save_mesh', dest='save_mesh', action='store_true', default=False, help='If set, save meshes to disk also')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for inference/fitting')
+    parser.add_argument('--is_texture_model', dest='is_texture_model', action='store_true', default=False, help='Set if demo-ing a texture model')
 
     args = parser.parse_args()
 
     # Download and load checkpoints
     download_models(CACHE_DIR_4DHUMANS)
-    model, model_cfg = load_hmr2(args.checkpoint)
+    model, model_cfg = load_hmr2(args.checkpoint, texture_model=args.is_texture_model)
 
     # Setup HMR2.0 model
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -81,6 +82,12 @@ def main():
             scaled_focal_length = model_cfg.EXTRA.FOCAL_LENGTH / model_cfg.MODEL.IMAGE_SIZE * img_size.max()
             pred_cam_t_full = cam_crop_to_full(pred_cam, box_center, box_size, img_size, scaled_focal_length).detach().cpu().numpy()
 
+            # Texture model stuff only
+            if args.is_texture_model:
+                uv_images, uv_mask = model.get_uv_texture(batch, out)
+                uv_rgba = torch.cat([uv_images, uv_mask], dim=1)
+                uv_bgra = uv_rgba[:,[2,1,0,3],:,:]
+
             # Render the result
             batch_size = batch['img'].shape[0]
             for n in range(batch_size):
@@ -110,6 +117,10 @@ def main():
                     final_img = np.concatenate([input_patch, regression_img], axis=1)
 
                 cv2.imwrite(os.path.join(args.out_folder, f'{img_fn}_{person_id}.png'), 255*final_img[:, :, ::-1])
+
+                # Save uv_images, uv_mask to disk
+                if args.is_texture_model:
+                    cv2.imwrite(os.path.join(args.out_folder, f'{img_fn}_{person_id}_uv.png'), 255*uv_bgra[n].permute(1,2,0).cpu().numpy())
 
                 # Add all verts and cams to list
                 verts = out['pred_vertices'][n].detach().cpu().numpy()

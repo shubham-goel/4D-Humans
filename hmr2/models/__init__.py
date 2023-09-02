@@ -1,5 +1,6 @@
 from .smpl_wrapper import SMPL
 from .hmr2 import HMR2
+from .hmr2_tex import HMR2_Texture
 from .discriminator import Discriminator
 
 from ..utils.download import cache_url
@@ -65,7 +66,7 @@ def convert_pkl(old_pkl, new_pkl):
         pickle.dump(loaded, outfile)
 
 DEFAULT_CHECKPOINT=f'{CACHE_DIR_4DHUMANS}/logs/train/multiruns/hmr2/0/checkpoints/epoch=35-step=1000000.ckpt'
-def load_hmr2(checkpoint_path=DEFAULT_CHECKPOINT):
+def load_hmr2(checkpoint_path=DEFAULT_CHECKPOINT, texture_model=False):
     from pathlib import Path
     from ..configs import get_config
     model_cfg = str(Path(checkpoint_path).parent.parent / 'model_config.yaml')
@@ -81,5 +82,9 @@ def load_hmr2(checkpoint_path=DEFAULT_CHECKPOINT):
     # Ensure SMPL model exists
     check_smpl_exists()
 
-    model = HMR2.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+    # Load model
+    if not texture_model:
+        model = HMR2.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+    else:
+        model = HMR2_Texture.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
     return model, model_cfg

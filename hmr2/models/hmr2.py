@@ -86,7 +86,7 @@ class HMR2(pl.LightningModule):
 
         return optimizer, optimizer_disc
 
-    def forward_step(self, batch: Dict, train: bool = False) -> Dict:
+    def forward_step(self, batch: Dict, train: bool = False, return_feat: bool = False) -> Dict:
         """
         Run a forward step of the network
         Args:
@@ -108,6 +108,8 @@ class HMR2(pl.LightningModule):
 
         # Store useful regression outputs to the output dict
         output = {}
+        if return_feat:
+            output['conditioning_feats'] = conditioning_feats
         output['pred_cam'] = pred_cam
         output['pred_smpl_params'] = {k: v.clone() for k,v in pred_smpl_params.items()}
 
