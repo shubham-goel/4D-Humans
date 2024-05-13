@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--save_mesh', dest='save_mesh', action='store_true', default=False, help='If set, save meshes to disk also')
     parser.add_argument('--detector', type=str, default='vitdet', choices=['vitdet', 'regnety'], help='Using regnety improves runtime')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for inference/fitting')
+    parser.add_argument('--file_type', nargs='+', default=['*.jpg', '*.png'], help='List of file extensions to consider')
 
     args = parser.parse_args()
 
@@ -63,8 +64,11 @@ def main():
     # Make output directory if it does not exist
     os.makedirs(args.out_folder, exist_ok=True)
 
+    # Get all demo images that end with .jpg or .png
+    img_paths = [img for end in args.file_type for img in Path(args.img_folder).glob(end)]
+
     # Iterate over all images in folder
-    for img_path in Path(args.img_folder).glob('*.png'):
+    for img_path in img_paths:
         img_cv2 = cv2.imread(str(img_path))
 
         # Detect humans in image
