@@ -80,9 +80,6 @@ To preprocess LSP Extended and Posetrack into metadata zip files for evaluation,
 
 Training data preprocessing coming soon.
 
-## Open Source Contributions
-[carlosedubarreto](https://github.com/carlosedubarreto/) has created a tutorial to import 4D Humans in Blender: https://www.patreon.com/posts/86992009
-
 ## Acknowledgements
 Parts of the code are taken or adapted from the following repos:
 - [ProHMR](https://github.com/nkolot/ProHMR)
