@@ -163,6 +163,24 @@ class HMR2_4dhuman(PHALP):
             ground_truth_track_id, ground_truth_annotations
         )
     
+    def track(self):
+        video_path = self.cfg.video.source
+        cap = cv2.VideoCapture(video_path)
+        if not cap.isOpened():
+            log.error(f"Error opening video file {video_path}")
+            return
+
+        frame_idx = 0
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            frame_name = f"frame_{frame_idx:06d}"
+            self.process_frame(frame, frame_name, frame_idx)
+            frame_idx += 1
+
+        cap.release()
 
 @dataclass
 class Human4DConfig(FullConfig):
