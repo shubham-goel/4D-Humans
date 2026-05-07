@@ -81,5 +81,17 @@ def load_hmr2(checkpoint_path=DEFAULT_CHECKPOINT):
     # Ensure SMPL model exists
     check_smpl_exists()
 
+    import torch
+    # Monkeypatch torch.load to set weights_only=False by default
+    orig_load = torch.load
+    def new_load(*args, **kwargs):
+        kwargs['weights_only'] = False
+        return orig_load(*args, **kwargs)
+    torch.load = new_load
+
     model = HMR2.load_from_checkpoint(checkpoint_path, strict=False, cfg=model_cfg)
+    
+    # Restore orig_load
+    torch.load = orig_load
+    
     return model, model_cfg

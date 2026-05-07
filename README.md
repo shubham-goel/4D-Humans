@@ -1,7 +1,41 @@
+# 4DHumans (Optimized Fork)
+This repository is a fork of [shubham-goel/4D-Humans](https://github.com/shubham-goel/4D-Humans) with several optimizations and fixes for dependency issues and computing bottlenecks.
+
+### Key Changes and Optimizations:
+- **Dependency Fixes:** Removed problematic git-based dependencies in `setup.py` that caused build triggers and installation failures.
+- **Memory Optimization:** 
+  - Added support for running HMR2 on CPU while keeping the detector on GPU (or vice versa) to handle low VRAM scenarios.
+  - Switched to a smaller, more efficient detector (ResNet-50) by default in `track.py` to reduce memory footprint.
+  - Reduced default input sizes for the detection model to speed up processing.
+- **Compatibility:** Added monkeypatches for `torch.load` to ensure compatibility with newer PyTorch versions (fixing the `weights_only` issue).
+- **Chunked Processing:** Added `run_chunks.py` and `run_chunks_rendered.py` for processing extremely long videos by splitting them into manageable chunks, preventing OOM (Out Of Memory) errors and allowing for resume-able processing.
+
+## Installation and Setup
+First, clone this repo.
+```bash
+git clone https://github.com/AnuragP004/4D-Humans.git
+cd 4D-Humans
+conda env create -f environment.yml
+conda activate 4D-humans
+```
+
+## Running the Chunked Processing
+For long videos that cause memory issues or take a long time to process, use the chunked processing scripts:
+
+```bash
+# To run tracking in chunks
+python run_chunks.py --video_path example_data/videos/your_video.mp4 --chunk_size 300 --output_dir outputs_chunked
+
+# To run tracking and rendering in chunks (recommended for visualization)
+python run_chunks_rendered.py --video_path example_data/videos/your_video.mp4 --chunk_size 300 --output_dir outputs_rendered
+```
+These scripts will divide the video into segments of `--chunk_size` frames, process each independently, and then stitch the results back together.
+
+---
+(Original README follows)
+---
+
 # 4DHumans: Reconstructing and Tracking Humans with Transformers
-Code repository for the paper:
-**Humans in 4D: Reconstructing and Tracking Humans with Transformers**
-[Shubham Goel](https://people.eecs.berkeley.edu/~shubham-goel/), [Georgios Pavlakos](https://geopavlakos.github.io/), [Jathushan Rajasegaran](https://brjathu.github.io/), [Angjoo Kanazawa](https://people.eecs.berkeley.edu/~kanazawa/)<sup>\*</sup>, [Jitendra Malik](http://people.eecs.berkeley.edu/~malik/)<sup>\*</sup>
 
 [![arXiv](https://img.shields.io/badge/arXiv-2305.20091-00ff00.svg)](https://arxiv.org/pdf/2305.20091.pdf)  [![Website shields.io](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://shubham-goel.github.io/4dhumans/)     [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ex4gE5v1bPR3evfhtG7sDHxQGsWwNwby?usp=sharing)  [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/brjathu/HMR2.0)
 

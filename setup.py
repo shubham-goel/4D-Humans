@@ -21,11 +21,11 @@ setup(
         'webdataset',
         'dill',
         'pandas',
-        'chumpy @ git+https://github.com/mattloper/chumpy',
+        # Removed chumpy git link to prevent build triggers
     ],
     extras_require={
         'all': [
-            'detectron2 @ git+https://github.com/facebookresearch/detectron2',
+            # Removed detectron2 git link completely
         ],
     },
 )

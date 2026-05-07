@@ -14,6 +14,11 @@ token_channel.csv
 /hmr2_training_data/
 /hmr2_evaluation_data/
 /outputs/
+/outputs_*/
+/detectron2_repo/
+Miniconda3-latest-Linux-x86_64.sh
+example_data/videos/Me1.mp4
+example_data/videos/Me2.mp4
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
