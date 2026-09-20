@@ -27,5 +27,8 @@ setup(
         'all': [
             'detectron2 @ git+https://github.com/facebookresearch/detectron2',
         ],
+        'yolo': [
+            'ultralytics',
+        ],
     },
 )
