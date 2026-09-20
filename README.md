@@ -38,6 +38,15 @@ python demo.py \
     --batch_size=48 --side_view --save_mesh --full_frame
 ```
 
+For faster runtime, you can also use RegNetY (`--detector regnety`) or YOLOv8 (`--detector yolo`, requires `pip install ultralytics`):
+```bash
+python demo.py \
+    --detector yolo \
+    --img_folder example_data/images \
+    --out_folder demo_out \
+    --batch_size=48 --side_view --save_mesh --full_frame
+```
+
 ## Run tracking demo on videos
 Our tracker builds on PHALP, please install that first:
 ```bash
