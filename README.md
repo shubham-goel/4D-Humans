@@ -22,7 +22,7 @@ If conda is too slow, you can use pip:
 conda create --name 4D-humans python=3.10
 conda activate 4D-humans
 pip install torch
-pip install -e .[all]
+pip install --no-build-isolation -e .[all]
 ```
 
 All checkpoints and data will automatically be downloaded to `$HOME/.cache/4DHumans` the first time you run the demo code.
